@@ -9,9 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.4.29",
+    "@vue-office/docx": "^1.6.2",
+    "@vue-office/pdf": "^2.0.2",
     "axios": "^1.7.4",
     "element-plus": "^2.8.0",
+    "pinia": "^2.2.2",
+    "pinia-plugin-persist": "^1.0.0",
+    "vue": "^3.4.29",
+    "vue-demi": "^0.14.10",
     "vue-router": "^4.4.3"
   },
   "devDependencies": {

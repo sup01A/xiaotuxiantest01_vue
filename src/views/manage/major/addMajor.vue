@@ -6,12 +6,13 @@ const dialogVisible = ref(false)
 const open = ()=>{
   dialogVisible.value = true
 }
-const close = ()=>{
-  dialogVisible.value = false
-}
 defineExpose({
   open
 })
+const close = ()=>{
+  dialogVisible.value = false
+}
+
 //调用父组件的方法
 const emits = defineEmits(['on-update']);
 //新增框数据模型
@@ -31,7 +32,7 @@ const dept = defineProps({
   deptData: Array
 })
 //新增一条专业信息
-import {addOneMajorServiceApi} from "@/service/major/majorService.js";
+import {addOneMajorServiceApi} from "@/service/manage/major/majorService.js";
 import {ElNotification} from "element-plus";
 const addMajor = async ()=>{
   try {

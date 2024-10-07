@@ -29,7 +29,7 @@ defineExpose({
 //调用父组件的方法
 const emits = defineEmits(['on-update']);
 //更新一条专业信息
-import {updateOneMajorServiceApi} from "@/service/major/majorService.js";
+import {updateOneMajorServiceApi} from "@/service/manage/major/majorService.js";
 const editUpdate = async ()=>{
   try {
     await updateOneMajorServiceApi(editData.value);

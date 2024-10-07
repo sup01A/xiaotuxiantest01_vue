@@ -1,9 +1,9 @@
 <script setup>
-import {Plus,EditPen,Close} from '@element-plus/icons-vue'
+import {Plus, EditPen, Close, ArrowRight} from '@element-plus/icons-vue'
 import {onBeforeMount, onMounted, ref} from "vue";
 // 表单数据模型
 const tableData = ref(null)
-import {majorPageWithDeptServiceApi} from "@/service/major/majorService.js";
+import {majorPageWithDeptServiceApi} from "@/service/manage/major/majorService.js";
 //采用分页获取后废弃
 // const getTableData = async ()=>{
 //   let axiosResponse = await majorWithDeptServiceApi();
@@ -11,11 +11,12 @@ import {majorPageWithDeptServiceApi} from "@/service/major/majorService.js";
 // }
 //调用方法获得数据
 
-//分页数据模型
-const paginationData = ref({
-  currentPageNum: 1,
-  pageSize: 10
-})
+//分页数据模型，使用pinia存用户的翻页数据，
+//解决了用户翻页后切换不同导航栏后再切回来
+//页数会重新回到首页，存着翻页数据就不会了
+import {userPageInfoStore} from "@/store/pageInfo.js";
+const pageInfoStore = userPageInfoStore()
+const {paginationData} = storeToRefs(pageInfoStore)
 //分页获取所有专业带系别属性的信息的总条数
 const majorPageWithDeptTotal = ref(0)
 //分页获取数据
@@ -29,9 +30,7 @@ const handleSizeChange = ()=>{
   getMajorPageWithDept()
 }
 //对学费进行格式化
-const formatMoney = (row, column, cellValue, index)=>{
-  return `￥ ${cellValue}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+import {formatMoney} from "@/views/common/common.js";
 //系别数据模型
 const deptData = ref(null)
 //获取所有系别信息
@@ -43,14 +42,15 @@ const getDeptData = async ()=>{
 }
 getDeptData()
 // 导入编辑框
-import editMajor from '@/views/manage/editMajor.vue'
+import editMajor from '@/views/manage/major/editMajor.vue'
 //打开子组件编辑框弹窗
 const editRef = ref(null)
 const onEdit = (row)=>{
   editRef.value.open(row)
 }
 // 导入新增框
-import addMajor from '@/views/manage/addMajor.vue'
+import addMajor from '@/views/manage/major/addMajor.vue'
+import {storeToRefs} from "pinia";
 //打开子组件新增框弹窗
 const addRef = ref(null)
 const onAdd = ()=>{
@@ -59,7 +59,10 @@ const onAdd = ()=>{
 </script>
 
 <template>
-<h1 style="text-align: center">后台管理-专业管理</h1>
+  <el-breadcrumb :separator-icon="ArrowRight">
+    <el-breadcrumb-item :to="{ path: '/manageHome' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>专业管理</el-breadcrumb-item>
+  </el-breadcrumb>
   <hr>
 <!--  新增按钮-->
   <div>
@@ -99,7 +102,7 @@ const onAdd = ()=>{
 
   </div>
 <!--  分页条-->
-  <div style="display: flex;justify-content: flex-end;margin-top: 10px">
+  <div style="display: flex;justify-content: flex-end;padding-top: 10px;padding-right: 5px">
     <el-pagination
         v-model:current-page="paginationData.currentPageNum"
         v-model:page-size="paginationData.pageSize"

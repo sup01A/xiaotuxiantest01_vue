@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+.status-0{
+    background-color: grey;
+    padding: 6px;
+    color: white;
+    border-radius: 8px;
+    display: inline-block;
+}
+.status-1{
+    background-color: #67c23a;
+    padding: 6px;
+    color: white;
+    border-radius: 8px;
+    display: inline-block;
+}
+.status-2{
+    background-color: #e6a23c;
+    padding: 6px;
+    color: white;
+    border-radius: 8px;
+    display: inline-block;
+}
+.header-cell{
+    color: black;
+}
+:root {
+    --el-menu-active-color: aqua;
+}
+.el-menu-item.is-active {
+    background-color: black !important; /* 替换 #你的颜色 为你想要的颜色 */
+}
+/*我的footer样式*/
+.my-el-footer{
+    background-image: linear-gradient(to right, #59eae9 , #4c9fd8);
+    text-align: center;
+    color: white;
+}
+/*我的菜单自定义样式*/
+.el-menu-vertical-demo{
+    height: 100vh;
+    background-image: linear-gradient(to bottom right, #edbbed, #4928de);
+}
+/*我的子菜单自定义样式*/
+.el-menu-vertical-demo .sub{
+    background-image: linear-gradient(to bottom right, darkgray, black);
+}
