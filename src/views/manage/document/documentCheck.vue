@@ -59,6 +59,35 @@ const updateButtonEvent = async (documentId,documentStatus,markContent)=>{
   }
 
 }
+//打开子组件删除框弹窗
+import DeleteConfirm from "@/views/common/deleteConfirm.vue";
+const deleteRef = ref(null)
+const onDelete = ()=>{
+  deleteRef.value.open()
+}
+//删除传参模型
+const deleteDataModel = ref({})
+import {deleteUploadPicture} from "@/service/manage/document/documentCheck.js";
+const deleteUploadPicEvent = async ()=>{
+  let axiosResponse = await deleteUploadPicture(deleteDataModel.value);
+  if (axiosResponse.data === true){
+    ElNotification({
+      title: '提示',
+      message: h('b', { style: 'color: green;font-size: 18px' }, '删除成功'),
+      duration: 2000,
+      type: 'success'
+    })
+    //删除成功重新获取数据
+    await getSearchResult()
+  }else {
+    ElNotification({
+      title: '提示',
+      message: h('b', { style: 'color: #ff3300;font-size: 18px' }, '删除失败'),
+      duration: 2000,
+      type: 'warning'
+    })
+  }
+}
 </script>
 
 <template>
@@ -141,7 +170,7 @@ const updateButtonEvent = async (documentId,documentStatus,markContent)=>{
               <el-button type="success" v-if="row.status === '审核未通过' || row.status === '未审核'" @click="updateButtonEvent(row.id,'审核通过','')">通过</el-button>
             </el-tooltip>
             <el-button type="warning" v-if="row.status === '审核通过' || row.status === '未审核'" @click="onMark(row.id,'审核未通过')">不通过</el-button>
-            <el-button type="danger">删除</el-button>
+            <el-button type="danger" @click="onDelete(),deleteDataModel.id = row.id,deleteDataModel.userId = row.userId,deleteDataModel.url = row.url">删除</el-button>
           </el-button-group>
         </template>
       </el-table-column>
@@ -155,6 +184,8 @@ const updateButtonEvent = async (documentId,documentStatus,markContent)=>{
     </el-dialog>
     <!--    备注框-->
     <EditMark ref="markRef" @callMyParent="updateButtonEvent"/>
+    <!--    确认删除弹窗-->
+    <delete-confirm ref="deleteRef" @callMyParent="deleteUploadPicEvent"/>
   </div>
 </template>
 

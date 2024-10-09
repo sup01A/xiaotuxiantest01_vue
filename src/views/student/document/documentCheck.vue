@@ -14,11 +14,19 @@ import {getClassByStatus} from "@/views/common/common.js";
 //引入图片点击
 import {useHandleClick} from "@/views/common/common.js";
 const { dialogUrl,dialogVisible,handleClick } = useHandleClick();
+//打开子组件删除框弹窗
+const deleteRef = ref(null)
+const onDelete = ()=>{
+  deleteRef.value.open()
+}
+//删除传参模型
+const deleteDataModel = ref({})
 //删除证件记录
 import {deleteUploadPicture} from "@/service/student/documentService.js";
 import {ElNotification} from "element-plus";
-const deleteUploadPicEvent = async (id)=>{
-  let axiosResponse = await deleteUploadPicture(id);
+import DeleteConfirm from "@/views/common/deleteConfirm.vue";
+const deleteUploadPicEvent = async ()=>{
+  let axiosResponse = await deleteUploadPicture(deleteDataModel.value);
   if (axiosResponse.data === true){
     ElNotification({
       title: '提示',
@@ -73,9 +81,10 @@ const deleteUploadPicEvent = async (id)=>{
       <el-table-column prop="mark" label="备注" />
       <el-table-column label="操作" width="150" >
         <template #default="{ row }">
-          <el-button type="danger" v-if="row.status !== '审核通过'" @click="deleteUploadPicEvent(row.id)">
+          <el-button  type="danger" v-if="row.status !== '审核通过'" @click="onDelete(),deleteDataModel.id = row.id,deleteDataModel.url = row.url">
             删除
           </el-button>
+
         </template>
       </el-table-column>
       <template #empty>
@@ -86,6 +95,8 @@ const deleteUploadPicEvent = async (id)=>{
     <el-dialog v-model="dialogVisible" style="width: 80%;margin-top: 5vh">
       <img style="width: 100%" :src="dialogUrl" alt="Preview Image" />
     </el-dialog>
+    <!--    确认删除弹窗-->
+    <delete-confirm ref="deleteRef" @callMyParent="deleteUploadPicEvent"/>
   </div>
 </template>
 

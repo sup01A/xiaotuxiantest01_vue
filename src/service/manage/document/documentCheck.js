@@ -11,3 +11,7 @@ export const getByConditionServiceApi = (data)=>{
 export const updateStatus = (data)=>{
     return instance.put(base + '/updateStatus',data)
 }
+//删除证件记录
+export const deleteUploadPicture = (data)=>{
+    return instance.delete(base + '/delete',{params: data})
+}

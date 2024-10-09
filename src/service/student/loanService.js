@@ -16,3 +16,7 @@ export const uploadLoanServiceApi = (data)=>{
 export const getUploadLoan = ()=>{
     return instance.get( base + '/getUpload')
 }
+//删除贷款记录
+export const deleteUploadLoan = (data)=>{
+    return instance.delete(base + '/delete',{params: data})
+}

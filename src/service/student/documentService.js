@@ -8,6 +8,6 @@ export const idCardPictureUploadUrl = '/api' + base + '/idCardPictureUpload'
 export const admissionTicketUpload = '/api' + base + '/admissionTicketUpload'
 export const acceptanceLetterUpload = '/api' + base + '/acceptanceLetterUpload'
 //删除证件记录
-export const deleteUploadPicture = (id)=>{
-    return instance.delete(`${base}/delete/${id}`)
+export const deleteUploadPicture = (data)=>{
+    return instance.delete(base + '/delete',{params: data})
 }

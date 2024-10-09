@@ -3,7 +3,7 @@
 import {ArrowRight,View,Download} from "@element-plus/icons-vue";
 import {getClassByStatus} from "@/views/common/common.js";
 import {getUploadLoan} from "@/service/student/loanService.js";
-import {ref} from "vue";
+import {h, ref} from "vue";
 import DiffDocumentShow from "@/views/common/diffDocumentShow.vue";
 import FileDialog from "@/views/common/fileDialog.vue";
 import FullPreview from "@/views/common/fullPreview.vue";
@@ -26,7 +26,37 @@ const fullPreviewRef = ref(null)
 const onOpenFullPreview = (data)=>{
   fullPreviewRef.value.open(data)
 }
-
+//打开子组件新增框弹窗
+const deleteRef = ref(null)
+const onDelete = ()=>{
+  deleteRef.value.open()
+}
+//删除传参模型
+const deleteDataModel = ref({})
+//删除证件记录
+import DeleteConfirm from "@/views/common/deleteConfirm.vue";
+import {deleteUploadLoan} from "@/service/student/loanService.js";
+import {ElNotification} from "element-plus";
+const deleteUploadLoanEvent = async ()=>{
+  let axiosResponse = await deleteUploadLoan(deleteDataModel.value);
+  if (axiosResponse.data === true){
+    ElNotification({
+      title: '提示',
+      message: h('b', { style: 'color: green;font-size: 18px' }, '删除成功'),
+      duration: 2000,
+      type: 'success'
+    })
+    //删除成功重新获取数据
+    await getUploadLoanData()
+  }else {
+    ElNotification({
+      title: '提示',
+      message: h('b', { style: 'color: #ff3300;font-size: 18px' }, '删除失败'),
+      duration: 2000,
+      type: 'warning'
+    })
+  }
+}
 </script>
 
 <template>
@@ -96,7 +126,7 @@ const onOpenFullPreview = (data)=>{
       <el-table-column label="操作" width="150" >
         <template #default="{ row }">
           <el-button-group size="small">
-            <el-button type="danger" v-if="row.status !== '审核通过'">删除
+            <el-button type="danger" v-if="row.status !== '审核通过'" @click="onDelete(),deleteDataModel.id = row.id,deleteDataModel.url1 = row.document1,deleteDataModel.url2 = row.document2">删除
             </el-button>
             <el-button @click="onOpenFullPreview(row)">整体预览</el-button>
           </el-button-group>
@@ -112,6 +142,8 @@ const onOpenFullPreview = (data)=>{
   <FileDialog ref="fileDialogRef"/>
 <!--  贷款记录整体预览抽屉-->
   <FullPreview ref="fullPreviewRef" @callMyParent="onOpenFileDialog"/>
+  <!--    确认删除弹窗-->
+  <delete-confirm ref="deleteRef" @callMyParent="deleteUploadLoanEvent"/>
 </template>
 
 <style scoped>

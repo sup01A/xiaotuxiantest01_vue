@@ -1,14 +1,11 @@
 <script setup>
 import {ref} from "vue";
-import DiffDocumentShow from "@/views/common/diffDocumentShow.vue";
-import {Download, View} from "@element-plus/icons-vue";
 import ViewAndDownload from "@/views/common/viewAndDownload.vue";
 const loanForm = ref(null)
 const drawer = ref(false)
 //模板引用，父组件触发子组件事件
 const open = (data)=>{
   drawer.value = true
-  console.log(data)
   loanForm.value = data
 }
 defineExpose({
