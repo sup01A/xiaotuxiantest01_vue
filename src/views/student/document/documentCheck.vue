@@ -1,7 +1,7 @@
 <script setup>
 import {ArrowRight} from "@element-plus/icons-vue";
 import {getUploadPicture} from "@/service/student/documentService.js";
-import {ref} from "vue";
+import {h, ref} from "vue";
 const tableData = ref([])
 
 const getUploadPictureData = async ()=>{
@@ -14,7 +14,29 @@ import {getClassByStatus} from "@/views/common/common.js";
 //引入图片点击
 import {useHandleClick} from "@/views/common/common.js";
 const { dialogUrl,dialogVisible,handleClick } = useHandleClick();
-
+//删除证件记录
+import {deleteUploadPicture} from "@/service/student/documentService.js";
+import {ElNotification} from "element-plus";
+const deleteUploadPicEvent = async (id)=>{
+  let axiosResponse = await deleteUploadPicture(id);
+  if (axiosResponse.data === true){
+    ElNotification({
+      title: '提示',
+      message: h('b', { style: 'color: green;font-size: 18px' }, '删除成功'),
+      duration: 2000,
+      type: 'success'
+    })
+    //删除成功重新获取数据
+    await getUploadPictureData()
+  }else {
+    ElNotification({
+      title: '提示',
+      message: h('b', { style: 'color: #ff3300;font-size: 18px' }, '删除失败'),
+      duration: 2000,
+      type: 'warning'
+    })
+  }
+}
 </script>
 
 <template>
@@ -51,7 +73,7 @@ const { dialogUrl,dialogVisible,handleClick } = useHandleClick();
       <el-table-column prop="mark" label="备注" />
       <el-table-column label="操作" width="150" >
         <template #default="{ row }">
-          <el-button type="danger" v-if="row.status !== '审核通过'">
+          <el-button type="danger" v-if="row.status !== '审核通过'" @click="deleteUploadPicEvent(row.id)">
             删除
           </el-button>
         </template>
