@@ -14,8 +14,8 @@ import {majorPageWithDeptServiceApi} from "@/service/manage/major/majorService.j
 //分页数据模型，使用pinia存用户的翻页数据，
 //解决了用户翻页后切换不同导航栏后再切回来
 //页数会重新回到首页，存着翻页数据就不会了
-import {userPageInfoStore} from "@/store/pageInfo.js";
-const pageInfoStore = userPageInfoStore()
+import {useMajorPageInfoStore} from "@/store/pageInfo.js";
+const pageInfoStore = useMajorPageInfoStore()
 const {paginationData} = storeToRefs(pageInfoStore)
 //分页获取所有专业带系别属性的信息的总条数
 const majorPageWithDeptTotal = ref(0)
@@ -102,7 +102,7 @@ const onAdd = ()=>{
 
   </div>
 <!--  分页条-->
-  <div style="display: flex;justify-content: flex-end;padding-top: 10px;padding-right: 5px">
+  <div style="display: flex;justify-content: flex-end;padding: 10px">
     <el-pagination
         v-model:current-page="paginationData.currentPageNum"
         v-model:page-size="paginationData.pageSize"
@@ -110,7 +110,6 @@ const onAdd = ()=>{
         layout="total, prev, pager, next, jumper, sizes"
         :total="majorPageWithDeptTotal"
         @change="handleSizeChange"
-        class="custom-pagination"
         background
     />
   </div>

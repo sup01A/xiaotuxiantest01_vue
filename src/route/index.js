@@ -1,7 +1,6 @@
 import {createRouter} from "vue-router";
 import {createWebHistory} from "vue-router";
 import {userRoleInfoStore} from "@/store/userRole.js";
-import {userPageInfoStore} from "@/store/pageInfo.js";
 
 const routes = [
     {
@@ -96,7 +95,7 @@ export const router = createRouter({
 })
 router.beforeEach( (to, from, next)=>{
     const roleInfoStore = userRoleInfoStore();
-    const pageInfoStore = userPageInfoStore();
+
     // const {userRoleData} = storeToRefs(roleInfoStore)
     if (to.meta.roleId !== roleInfoStore.userRoleData.roleId && to.meta.roleId !== -1 && to.meta.roleId !== undefined){
 
@@ -110,7 +109,6 @@ router.beforeEach( (to, from, next)=>{
     } else {
         console.log("一样to:" + to.meta.roleId)
         console.log("一样have:" + roleInfoStore.userRoleData.roleId)
-        console.log(pageInfoStore.paginationData.currentPageNum)
         next();
     }
 })

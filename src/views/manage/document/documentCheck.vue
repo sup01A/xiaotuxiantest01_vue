@@ -12,18 +12,42 @@ import {getClassByStatus} from "@/views/common/common.js";
 //引入图片点击
 import {useHandleClick} from "@/views/common/common.js";
 const { dialogUrl,dialogVisible,handleClick } = useHandleClick();
-//搜索相关
-const searchDataModel = ref({
-})
-//清空方法
-const resetSearchDataModel = ()=>{
-  searchDataModel.value = {}
-}
+
+// //清空方法
+// const resetSearchDataModel = ()=>{
+//   searchDataModel.value = {}
+// }
 import {getByConditionServiceApi} from "@/service/manage/document/documentCheck.js";
-//根据搜索条件获取数据
-const getSearchResult = async ()=>{
-  let axiosResponse = await getByConditionServiceApi(searchDataModel.value);
-  tableData.value = axiosResponse.data
+// //根据搜索条件获取数据
+// const getSearchResult = async ()=>{
+//   let axiosResponse = await getByConditionServiceApi(searchDataModel.value);
+//   tableData.value = axiosResponse.data
+// }
+//分页数据模型，使用pinia存用户的翻页数据，
+//解决了用户翻页后切换不同导航栏后再切回来
+//页数会重新回到首页，存着翻页数据就不会了
+import {useDocumentPhotoPageInfoStore} from "@/store/pageInfo.js";
+const pageInfoStore = useDocumentPhotoPageInfoStore()
+const {paginationData} = storeToRefs(pageInfoStore)
+
+// //搜索相关
+// const searchDataModel = ref({
+//   currentPageNum : paginationData.value.currentPageNum,
+//   pageSize : paginationData.value.pageSize
+// })
+
+//分页条件获取所有证件记录的信息的总条数
+const documentPhotoTotal = ref(0)
+//分页根据搜索条件获取数据
+import {getPageByConditionServiceApi} from "@/service/manage/document/documentCheck.js";
+const getPageSearchResult = async ()=>{
+  let axiosResponse = await getPageByConditionServiceApi(paginationData.value);
+  tableData.value = axiosResponse.data.records
+  documentPhotoTotal.value = axiosResponse.data.total
+}
+getPageSearchResult()
+const handleSizeChange = ()=>{
+  getPageSearchResult()
 }
 //打开子组件编辑框弹窗
 const markRef = ref(null)
@@ -48,7 +72,9 @@ const updateButtonEvent = async (documentId,documentStatus,markContent)=>{
       duration: 2000,
       type: 'success'
     })
-    await getSearchResult()
+    // await getSearchResult()
+    //分页
+    await getPageSearchResult()
   }else {
     ElNotification({
       title: '提示',
@@ -68,6 +94,7 @@ const onDelete = ()=>{
 //删除传参模型
 const deleteDataModel = ref({})
 import {deleteUploadPicture} from "@/service/manage/document/documentCheck.js";
+import {storeToRefs} from "pinia";
 const deleteUploadPicEvent = async ()=>{
   let axiosResponse = await deleteUploadPicture(deleteDataModel.value);
   if (axiosResponse.data === true){
@@ -78,7 +105,9 @@ const deleteUploadPicEvent = async ()=>{
       type: 'success'
     })
     //删除成功重新获取数据
-    await getSearchResult()
+    // await getSearchResult()
+    //分页
+    await getPageSearchResult()
   }else {
     ElNotification({
       title: '提示',
@@ -97,10 +126,10 @@ const deleteUploadPicEvent = async ()=>{
   </el-breadcrumb>
   <hr>
   <!--    头部下面的条件搜索表单-->
-  <el-form :inline="true" v-model="searchDataModel">
+  <el-form :inline="true" v-model="paginationData">
     <el-form-item label="用户名:">
       <el-input
-          v-model="searchDataModel.account"
+          v-model="paginationData.account"
           style="width: 150px"
           clearable
       >
@@ -111,7 +140,7 @@ const deleteUploadPicEvent = async ()=>{
           placeholder="请选择"
           clearable
           style="width: 130px"
-          v-model="searchDataModel.typeName"
+          v-model="paginationData.typeName"
       >
         <el-option v-for="item in allDocumentType" :label="item" :value="item" />
       </el-select>
@@ -121,16 +150,16 @@ const deleteUploadPicEvent = async ()=>{
           placeholder="请选择"
           clearable
           style="width: 130px"
-          v-model="searchDataModel.status"
+          v-model="paginationData.status"
       >
         <el-option v-for="item in allStatus" :label="item" :value="item" />
       </el-select>
     </el-form-item>
     <el-form-item>
-      <el-button color="#626aef" @click="getSearchResult">搜索</el-button>
+      <el-button color="#626aef" @click="getPageSearchResult">搜索</el-button>
     </el-form-item>
     <el-form-item>
-      <el-button @click="resetSearchDataModel">重置</el-button>
+      <el-button @click="pageInfoStore.resetPaginationData(),getPageSearchResult()">重置</el-button>
     </el-form-item>
   </el-form>
   <!--  表格-->
@@ -178,6 +207,18 @@ const deleteUploadPicEvent = async ()=>{
         <el-empty description="没有数据" />
       </template>
     </el-table>
+    <!--  分页条-->
+    <div style="display: flex;justify-content: flex-end;padding: 10px">
+      <el-pagination
+          v-model:current-page="paginationData.currentPageNum"
+          v-model:page-size="paginationData.pageSize"
+          :page-sizes="[1, 2, 3, 30]"
+          layout="total, prev, pager, next, jumper, sizes"
+          :total="documentPhotoTotal"
+          @change="handleSizeChange"
+          background
+      />
+    </div>
     <!--    图片放大框-->
     <el-dialog v-model="dialogVisible" style="width: 80%;margin-top: 5vh">
       <img style="width: 100%" :src="dialogUrl" alt="Preview Image" />
