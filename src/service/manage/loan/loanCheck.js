@@ -4,3 +4,7 @@ const base = '/manage/loanCheck'
 export const getByConditionServiceApi = (data)=>{
     return instance.get(base + '/byCondition',{params:data})
 }
+//删除贷款记录
+export const deleteUploadLoan = (data)=>{
+    return instance.delete(base + '/delete',{params: data})
+}

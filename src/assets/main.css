@@ -34,9 +34,16 @@ body {
 }
 /*我的footer样式*/
 .my-el-footer{
-    background-image: linear-gradient(to right, #59eae9 , #4c9fd8);
+    background-image: linear-gradient(to right, #a6dcdc, deepskyblue);
     text-align: center;
     color: white;
+}
+/*我的header样式*/
+.my-el-header{
+    display: flex;
+    justify-content: space-between;
+    height: 55px;
+    background-image: linear-gradient(to right, #a6dcdc, deepskyblue);
 }
 /*我的菜单自定义样式*/
 .el-menu-vertical-demo{

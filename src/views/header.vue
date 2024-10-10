@@ -8,7 +8,7 @@ defineProps({
 </script>
 <!-- Header.vue -->
 <template>
-  <el-header style="display: flex; justify-content: space-between;height: 55px;background-image: linear-gradient(to right, #59eae9 , #4c9fd8);">
+  <el-header class="my-el-header">
     <p>欢迎你：User</p>
     <el-dropdown>
       <span>
